@@ -23,9 +23,19 @@ class CalculatorScreenState extends State<CalculatorScreen> {
 
   double _result = 0;
 
-  Calculator get _c => widget.calculator;
+  Calculator _c;
+  ICalculator _calculator;
 
-  ICalculator get _calculator => _c.calculator.build(inputChangedCallback);
+  @override
+  void initState() {
+    super.initState();
+    initCalculator(widget.calculator);
+  }
+
+  void initCalculator(Calculator calculator) {
+    _c = calculator;
+    _calculator = _c.calculator.build(inputChangedCallback);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +83,7 @@ class CalculatorScreenState extends State<CalculatorScreen> {
     var actions = <Widget>[
       IconButton(
         icon: Icon(Icons.clear),
-        onPressed: () {},
+        onPressed: () => {},
       ),
       IconButton(
         icon: Icon(Icons.menu),
@@ -97,17 +107,11 @@ class CalculatorScreenState extends State<CalculatorScreen> {
     return Ink(
       color: selected ? const Color(0xff555555) : Colors.transparent,
       child: ListTile(
-        onTap: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  CalculatorScreen(
-                    calculator: calc,
-                  ),
-            ),
-          );
-        },
+        onTap: () =>
+            setState(() {
+              initCalculator(calc);
+              Navigator.pop(context); // Close drawer
+            }),
         leading: SvgPicture.asset(
           calc.icon,
           semanticsLabel: calc.title,
