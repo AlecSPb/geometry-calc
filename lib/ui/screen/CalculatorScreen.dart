@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geometry_calc/model/Calculator.dart';
 import 'package:geometry_calc/model/Data.dart';
+import 'package:geometry_calc/model/calc/ICalculator.dart';
 import 'package:geometry_calc/ui/widget/ResultWidget.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 
@@ -22,7 +23,9 @@ class CalculatorScreenState extends State<CalculatorScreen> {
 
   double _result = 0;
 
-  Calculator get _calculator => widget.calculator;
+  Calculator get _c => widget.calculator;
+
+  ICalculator get _calculator => _c.calculator.build(inputChangedCallback);
 
   @override
   Widget build(BuildContext context) {
@@ -32,15 +35,17 @@ class CalculatorScreenState extends State<CalculatorScreen> {
       endDrawer: Drawer(
         child: ListView.builder(
           itemCount: Data.calculators.length,
-          itemBuilder: (context, index) => buildTile(Data.calculators[index]),
+          itemBuilder: (context, index) {
+            var calculator = Data.calculators[index];
+
+            return buildTile(calculator, calculator == _c);
+          },
         ),
       ),
       body: SafeArea(
         child: Column(
           mainAxisSize: MainAxisSize.max,
-          children:
-          _calculator.calculator.build(inputChangedCallback).getInputs() +
-              [ResultWidget(result: _result)],
+          children: _calculator.getInputs() + [ResultWidget(result: _result)],
         ),
       ),
     );
@@ -50,10 +55,9 @@ class CalculatorScreenState extends State<CalculatorScreen> {
     var title = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
-
       children: <Widget>[
-        Text(_calculator.title),
-        SizedBox(height: 4, width: double.infinity,),
+        Text(_c.title),
+        SizedBox(height: 4, width: double.infinity),
         Opacity(
           child: Text("Объём", style: TextStyle(fontSize: 12)),
           opacity: 0.5,
@@ -89,33 +93,36 @@ class CalculatorScreenState extends State<CalculatorScreen> {
     );
   }
 
-  Widget buildTile(Calculator calc) {
-    return ListTile(
-      onTap: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                CalculatorScreen(
-                  calculator: calc,
-                ),
-          ),
-        );
-      },
-      leading: SvgPicture.asset(
-        calc.icon,
-        semanticsLabel: calc.title,
-        height: 24,
-        width: 24,
+  Widget buildTile(Calculator calc, bool selected) {
+    return Ink(
+      color: selected ? const Color(0xff555555) : Colors.transparent,
+      child: ListTile(
+        onTap: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  CalculatorScreen(
+                    calculator: calc,
+                  ),
+            ),
+          );
+        },
+        leading: SvgPicture.asset(
+          calc.icon,
+          semanticsLabel: calc.title,
+          height: 24,
+          width: 24,
+        ),
+        title: Text(calc.title),
       ),
-      title: Text(calc.title),
     );
   }
 
   void inputChangedCallback() {
     //todo рассчёт в зависимости от выбранного режима
     setState(() {
-      _result = _calculator.calculator.calculateVolume();
+      _result = _c.calculator.calculateVolume();
     });
   }
 }
