@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 /// Виджет для отображения результатов вычислений
 class ResultWidget extends StatefulWidget {
-  final int result;
+  final double result;
 
   ResultWidget({
     @required this.result,
@@ -10,17 +10,11 @@ class ResultWidget extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return ResultWidgetState(r: result);
+    return ResultWidgetState();
   }
 }
 
 class ResultWidgetState extends State<ResultWidget> {
-  int _result;
-
-  ResultWidgetState({@required int r}) {
-    _result = r;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -49,12 +43,18 @@ class ResultWidgetState extends State<ResultWidget> {
 
   Widget buildResult() {
     return Text(
-      _result.toString(),
+      formatResult(),
       textAlign: TextAlign.right,
       style: TextStyle(
         fontSize: 26,
         fontWeight: FontWeight.bold,
       ),
     );
+  }
+
+  String formatResult() {
+    var r = widget.result;
+
+    return r.toStringAsFixed(r.truncateToDouble() == r ? 0 : 2);
   }
 }
