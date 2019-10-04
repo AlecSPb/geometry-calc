@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geometry_calc/model/Calculator.dart';
@@ -26,6 +25,9 @@ class CalculatorScreenState extends State<CalculatorScreen> {
   Calculator _c;
   ICalculator _calculator;
 
+  String _calculationTypeName;
+  Function _calculationType;
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +37,11 @@ class CalculatorScreenState extends State<CalculatorScreen> {
   void initCalculator(Calculator calculator) {
     _c = calculator;
     _calculator = _c.calculator.build(inputChangedCallback);
+
+    _calculationTypeName = _calculator.calculationsTypes.keys.toList()[0];
+    _calculationType = _calculator.calculationsTypes[_calculationTypeName];
+
+    _result = _calculationType();
   }
 
   @override
@@ -69,11 +76,29 @@ class CalculatorScreenState extends State<CalculatorScreen> {
         Text(_c.title),
         SizedBox(height: 4, width: double.infinity),
         Opacity(
-          child: Text("Объём", style: TextStyle(fontSize: 12)),
+          child: Text(_calculationTypeName, style: TextStyle(fontSize: 12)),
           opacity: 0.5,
         ),
       ],
     );
+
+    var calculationsTypes = <Widget>[];
+    _calculator.calculationsTypes.forEach((key, value) {
+      calculationsTypes.add(
+        ListTile(
+          title: Text(key),
+          onTap: () =>
+              setState(() {
+                _calculationType = value;
+                _calculationTypeName = key;
+
+                _result = _calculationType();
+
+                Navigator.pop(context); // Close dialog
+              }),
+        ),
+      );
+    });
 
     var homeButton = IconButton(
       icon: Icon(OMIcons.home),
@@ -94,7 +119,12 @@ class CalculatorScreenState extends State<CalculatorScreen> {
     return AppBar(
       title: InkWell(
         child: title,
-        onTap: () {},
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (context) => SimpleDialog(children: calculationsTypes),
+          );
+        },
       ),
       centerTitle: true,
       leading: homeButton,
@@ -124,9 +154,8 @@ class CalculatorScreenState extends State<CalculatorScreen> {
   }
 
   void inputChangedCallback() {
-    //todo рассчёт в зависимости от выбранного режима
     setState(() {
-      _result = _c.calculator.calculateVolume();
+      _result = _calculationType();
     });
   }
 }

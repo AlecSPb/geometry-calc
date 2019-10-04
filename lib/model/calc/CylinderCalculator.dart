@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
 import 'package:geometry_calc/model/calc/ICalculator.dart';
 import 'package:geometry_calc/ui/widget/InputWidget.dart';
 
@@ -11,14 +10,17 @@ class CylinderCalculator extends ICalculator {
   @override
   CylinderCalculator build(Function ic) {
     super.build(ic);
-    return this;
-  }
 
-  @override
-  List<Widget> getInputs() {
-    return [
+    super.ct = {
+      'Объём': _calculateVolume,
+      'Боковая поверхность': _calculateLateralArea,
+      'Полная поверхность': _calculateArea,
+    };
+
+    super.inputs = [
       InputWidget(
         label: "Радиус",
+        text: _radius.toString(),
         inputCallback: (text) {
           _radius = int.parse(text);
           inputsChanged();
@@ -26,21 +28,26 @@ class CylinderCalculator extends ICalculator {
       ),
       InputWidget(
         label: "Высота",
+        text: _height.toString(),
         inputCallback: (text) {
           _height = int.parse(text);
           inputsChanged();
         },
       ),
     ];
+
+    return this;
   }
 
-  @override
-  double calculateArea() {
-    return math.pi * _radius * _radius;
+  double _calculateArea() {
+    return 2 * math.pi * _radius * (_height + _radius);
   }
 
-  @override
-  double calculateVolume() {
-    return calculateArea() * _height;
+  double _calculateLateralArea() {
+    return 2 * math.pi * _radius * _height;
+  }
+
+  double _calculateVolume() {
+    return math.pi * _radius * _radius * _height;
   }
 }

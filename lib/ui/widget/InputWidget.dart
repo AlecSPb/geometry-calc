@@ -4,34 +4,34 @@ import 'package:flutter/material.dart';
 /// Виджет для ввода данных
 class InputWidget extends StatefulWidget {
   final String label;
+  final String text;
   final Function(String) inputCallback;
 
-  InputWidget({@required this.label, @required this.inputCallback});
+  InputWidget({
+    @required this.label,
+    @required this.text,
+    @required this.inputCallback,
+  });
 
   @override
   State<StatefulWidget> createState() {
-    return InputWidgetState(label, inputCallback);
+    return InputWidgetState();
   }
 }
 
 class InputWidgetState extends State<InputWidget> {
   TextEditingController _controller;
-  Function(String) _inputCallback;
-  String _label;
-
-  InputWidgetState(String label, Function(String) inputCallback) {
-    _label = label;
-    _inputCallback = inputCallback;
-  }
 
   @override
   void initState() {
     super.initState();
-    _controller = new TextEditingController(text: 0.toString());
+    _controller = new TextEditingController(text: widget.text);
   }
 
   @override
   Widget build(BuildContext context) {
+    _controller.text = widget.text;
+
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(
@@ -43,17 +43,17 @@ class InputWidgetState extends State<InputWidget> {
           children: <Widget>[
             Spacer(),
             TextField(
-              textAlign: TextAlign.end,
-              style: TextStyle(fontSize: 32),
               controller: _controller,
-              onChanged: (text) => _inputCallback(text),
               keyboardType: TextInputType.number,
+              onChanged: (text) => widget.inputCallback(text),
+              style: TextStyle(fontSize: 32),
               decoration: InputDecoration.collapsed(hintText: null),
+              textAlign: TextAlign.end,
             ),
             SizedBox(height: 22),
             Opacity(
               opacity: 0.6,
-              child: Text(_label, style: TextStyle(fontSize: 16)),
+              child: Text(widget.label, style: TextStyle(fontSize: 16)),
             )
           ],
         ),

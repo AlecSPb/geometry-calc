@@ -1,6 +1,5 @@
 import 'dart:math' as math;
 
-import 'package:flutter/material.dart';
 import 'package:geometry_calc/model/calc/ICalculator.dart';
 import 'package:geometry_calc/ui/widget/InputWidget.dart';
 
@@ -10,29 +9,31 @@ class SphereCalculator extends ICalculator {
   @override
   SphereCalculator build(Function ic) {
     super.build(ic);
-    return this;
-  }
 
-  @override
-  List<Widget> getInputs() {
-    return [
+    super.ct = {
+      'Объём': _calculateVolume,
+      'Полная поверхность': _calculateArea,
+    };
+
+    super.inputs = [
       InputWidget(
         label: "Радиус",
+        text: _radius.toString(),
         inputCallback: (text) {
           _radius = int.parse(text);
           inputsChanged();
         },
       ),
     ];
+
+    return this;
   }
 
-  @override
-  double calculateArea() {
+  double _calculateArea() {
     return 4 * math.pi * _radius * _radius;
   }
 
-  @override
-  double calculateVolume() {
+  double _calculateVolume() {
     return 4 / 3 * math.pi * _radius * _radius * _radius;
   }
 }
