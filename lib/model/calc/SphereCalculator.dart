@@ -15,7 +15,7 @@ class SphereCalculator extends ICalculator {
       'Полная поверхность': _calculateArea,
     };
 
-    super.inputs = [
+    super.i = [
       InputWidget(
         label: "Радиус",
         text: _radius.toString(),

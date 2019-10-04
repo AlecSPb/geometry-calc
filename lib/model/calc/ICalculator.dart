@@ -2,20 +2,22 @@ import 'package:flutter/material.dart';
 
 /// Интерфейс описания калькулятора
 abstract class ICalculator {
-  //region Данные
+  //region data
+
+  /// Список виджетов для ввода данных
+  @protected
+  List<Widget> i;
+
+  List<Widget> get inputs => i;
 
   /// Срабатывает при изменении одного из полей ввода
   @protected
   Function() inputsChanged;
 
-  @protected
-  List<Widget> inputs;
-
   /// Словарь всех методов рассчёта
   @protected
   Map<String, Function> ct;
 
-  /// Словарь всех методов рассчёта
   Map<String, Function> get calculationsTypes => ct;
 
   //endregion
@@ -25,7 +27,4 @@ abstract class ICalculator {
     inputsChanged = ic;
     return this;
   }
-
-  /// Возвращаем список виджетов ввода для ICalculator
-  List<Widget> getInputs() => inputs;
 }
