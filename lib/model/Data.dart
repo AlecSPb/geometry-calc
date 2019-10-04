@@ -6,7 +6,7 @@ class Data {
   static List<Calculator> calculators = [
     Calculator(
       icon: "assets/ic_cone.svg",
-      title: "Цилиндр",
+      title: "Конус",
       calculator: null,
     ),
     Calculator(
