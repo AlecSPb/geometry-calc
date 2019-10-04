@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:geometry_calc/model/Calculator.dart';
@@ -18,144 +19,209 @@ class CalculatorScreen extends StatefulWidget {
 }
 
 class CalculatorScreenState extends State<CalculatorScreen> {
+  //region data
+
+  /// Ключ для управления Scaffold извне метода build
   GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey();
 
-  double _result = 0;
-
+  /// Обёртка калькулятора. Хранит иконку, название и сам калькулятор
   Calculator _c;
+
+  /// Калькулятор. Отдаёт виджеты взаимодействия и методы рассчёта
   ICalculator _calculator;
 
+  /// Имя вычисляемой характеристики (т.е. объём, площадь поверхности...)
   String _calculationTypeName;
-  Function _calculationType;
+
+  Function _calculationFunction;
+
+  /// Результат расчёта
+  double _result = 0;
+
+  //endregion
 
   @override
   void initState() {
     super.initState();
-    initCalculator(widget.calculator);
-  }
-
-  void initCalculator(Calculator calculator) {
-    _c = calculator;
-    _calculator = _c.calculator.build(inputChangedCallback);
-
-    _calculationTypeName = _calculator.calculationsTypes.keys.toList()[0];
-    _calculationType = _calculator.calculationsTypes[_calculationTypeName];
-
-    _result = _calculationType();
+    setupCalculator(widget.calculator);
   }
 
   @override
   Widget build(BuildContext context) {
+    var navigationSidebar = Drawer(
+      child: ListView.builder(
+        itemCount: Data.calculators.length,
+        itemBuilder: (_, index) => buildNavigationTile(Data.calculators[index]),
+      ),
+    );
+
     return Scaffold(
       key: _scaffoldKey,
       appBar: buildAppBar(),
-      endDrawer: Drawer(
-        child: ListView.builder(
-          itemCount: Data.calculators.length,
-          itemBuilder: (context, index) {
-            var calculator = Data.calculators[index];
-
-            return buildTile(calculator, calculator == _c);
-          },
-        ),
-      ),
+      endDrawer: navigationSidebar,
       body: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: _calculator.getInputs() + [ResultWidget(result: _result)],
-        ),
+        child: _c.calculator == null
+            ? buildUnimplementedBlank()
+            : buildCalculatorUi(),
       ),
     );
   }
 
+  //region logic
+
+  void setupCalculator(Calculator calculator) {
+    _c = calculator;
+
+    if (_c.calculator == null) return;
+
+    _calculator = _c.calculator.build(inputChangedCallback);
+
+    _calculationTypeName = _calculator.calculationsTypes.keys.toList()[0];
+    _calculationFunction = _calculator.calculationsTypes[_calculationTypeName];
+
+    _result = _calculationFunction();
+  }
+
+  void changeCalculationType(String name, Function function) {
+    setState(() {
+      _calculationTypeName = name;
+      _calculationFunction = function;
+
+      _result = _calculationFunction();
+
+      Navigator.pop(context); // Закрыть диалог
+    });
+  }
+
+  void inputChangedCallback() =>
+      setState(() => _result = _calculationFunction());
+
+  //endregion
+
+  //region ui
+
   Widget buildAppBar() {
+    return AppBar(
+      title: buildAppBarTitle(),
+      centerTitle: true,
+      leading: buildAppBarHomeButton(),
+      actions: buildAppBarActions(),
+      backgroundColor: Colors.transparent,
+    );
+  }
+
+  Widget buildAppBarTitle() {
+    var subtitle = _c.calculator != null
+        ? [
+      SizedBox(height: 4, width: double.infinity),
+      Opacity(
+        child: Text(_calculationTypeName, style: TextStyle(fontSize: 12)),
+        opacity: 0.5,
+      )
+    ]
+        : <Widget>[];
+
     var title = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.max,
-      children: <Widget>[
-        Text(_c.title),
-        SizedBox(height: 4, width: double.infinity),
-        Opacity(
-          child: Text(_calculationTypeName, style: TextStyle(fontSize: 12)),
-          opacity: 0.5,
-        ),
-      ],
+      children: <Widget>[Text(_c.title)] + subtitle,
     );
 
-    var calculationsTypes = <Widget>[];
-    _calculator.calculationsTypes.forEach((key, value) {
-      calculationsTypes.add(
-        ListTile(
-          title: Text(key),
-          onTap: () =>
-              setState(() {
-                _calculationType = value;
-                _calculationTypeName = key;
+    var tapAction = _c.calculator != null ? showCalculationTypeDialog : null;
 
-                _result = _calculationType();
+    return InkWell(
+      child: title,
+      onTap: tapAction,
+    );
+  }
 
-                Navigator.pop(context); // Close dialog
-              }),
-        ),
-      );
-    });
-
-    var homeButton = IconButton(
+  Widget buildAppBarHomeButton() {
+    return IconButton(
       icon: Icon(OMIcons.home),
       onPressed: () => Navigator.pop(context),
     );
+  }
 
-    var actions = <Widget>[
+  List<Widget> buildAppBarActions() {
+    return <Widget>[
       IconButton(
         icon: Icon(Icons.clear),
-        onPressed: () => {},
+        onPressed: _c.calculator == null ? null : () => {},
       ),
       IconButton(
         icon: Icon(Icons.menu),
         onPressed: () => _scaffoldKey.currentState.openEndDrawer(),
       )
     ];
+  }
 
-    return AppBar(
-      title: InkWell(
-        child: title,
-        onTap: () {
-          showDialog(
-            context: context,
-            builder: (context) => SimpleDialog(children: calculationsTypes),
-          );
-        },
-      ),
-      centerTitle: true,
-      leading: homeButton,
-      actions: actions,
-      backgroundColor: Colors.transparent,
+  /// Показывает диалог смены типа вычислений
+  void showCalculationTypeDialog() {
+    var calculationsTypes = <Widget>[];
+
+    _calculator.calculationsTypes.forEach(
+          (key, value) =>
+          calculationsTypes.add(
+            ListTile(
+              title: Text(key),
+              onTap: () => changeCalculationType(key, value),
+            ),
+          ),
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) => SimpleDialog(children: calculationsTypes),
     );
   }
 
-  Widget buildTile(Calculator calc, bool selected) {
+  Widget buildNavigationTile(Calculator calc) {
+    var icon = SvgPicture.asset(
+      calc.icon,
+      semanticsLabel: calc.title,
+      height: 24,
+      width: 24,
+    );
+
+    var text = Text(calc.title);
+
+    var tapAction = () =>
+        setState(() {
+          setupCalculator(calc);
+          Navigator.pop(context); // Close drawer
+        });
+
     return Ink(
-      color: selected ? const Color(0xff555555) : Colors.transparent,
+      color: _c == calc ? const Color(0xff555555) : Colors.transparent,
       child: ListTile(
-        onTap: () =>
-            setState(() {
-              initCalculator(calc);
-              Navigator.pop(context); // Close drawer
-            }),
-        leading: SvgPicture.asset(
-          calc.icon,
-          semanticsLabel: calc.title,
-          height: 24,
-          width: 24,
-        ),
-        title: Text(calc.title),
+        onTap: tapAction,
+        leading: icon,
+        title: text,
       ),
     );
   }
 
-  void inputChangedCallback() {
-    setState(() {
-      _result = _calculationType();
-    });
+  Widget buildUnimplementedBlank() {
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Icon(OMIcons.settings, size: 48),
+          SizedBox(height: 18),
+          Text("В процессе разработки", style: TextStyle(fontSize: 18))
+        ],
+      ),
+    );
   }
+
+  Widget buildCalculatorUi() {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: _calculator.inputs + [ResultWidget(result: _result)],
+    );
+  }
+
+//endregion
 }
