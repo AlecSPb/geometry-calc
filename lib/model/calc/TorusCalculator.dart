@@ -19,6 +19,20 @@ class TorusCalculator extends ICalculator {
       'Полная поверхность': _calculateArea,
     };
 
+    initInputs();
+
+    return this;
+  }
+
+  @override
+  void clear() {
+    _R = 0;
+    _r = 0;
+
+    initInputs();
+  }
+
+  void initInputs() {
     super.i = [
       InputWidget(
         label: "Радиус окружности (r)",
@@ -37,8 +51,6 @@ class TorusCalculator extends ICalculator {
         },
       ),
     ];
-
-    return this;
   }
 
   double _calculateArea() {

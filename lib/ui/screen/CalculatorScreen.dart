@@ -88,8 +88,6 @@ class CalculatorScreenState extends State<CalculatorScreen> {
       _calculationFunction = function;
 
       _result = _calculationFunction();
-
-      Navigator.pop(context); // Закрыть диалог
     });
   }
 
@@ -146,7 +144,7 @@ class CalculatorScreenState extends State<CalculatorScreen> {
     return <Widget>[
       IconButton(
         icon: Icon(Icons.clear),
-        onPressed: _c.calculator == null ? null : () => {},
+        onPressed: _c.calculator == null ? null : showClearCalculatorDialog,
       ),
       IconButton(
         icon: Icon(Icons.menu),
@@ -164,7 +162,10 @@ class CalculatorScreenState extends State<CalculatorScreen> {
           calculationsTypes.add(
             ListTile(
               title: Text(key),
-              onTap: () => changeCalculationType(key, value),
+              onTap: () {
+                changeCalculationType(key, value);
+                Navigator.pop(context); // Закрыть диалог
+              },
             ),
           ),
     );
@@ -173,6 +174,35 @@ class CalculatorScreenState extends State<CalculatorScreen> {
       context: context,
       builder: (context) => SimpleDialog(children: calculationsTypes),
     );
+  }
+
+  void showClearCalculatorDialog() {
+    Widget cancelButton = FlatButton(
+      child: Text("Отмена"),
+      onPressed: () => Navigator.pop(context),
+    );
+
+    Widget okButton = FlatButton(
+      child: Text("ОК"),
+      onPressed: () =>
+          setState(() {
+            _calculator.clear();
+            _result = 0;
+
+            Navigator.pop(context); // Закрыть диалог
+          }),
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text("Отчистить"),
+      content: Text("Вы действительно хотите отчистить введённые данные"),
+      actions: [
+        cancelButton,
+        okButton,
+      ],
+    );
+
+    showDialog(context: context, builder: (BuildContext context) => alert);
   }
 
   Widget buildNavigationTile(Calculator calc) {

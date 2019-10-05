@@ -4,6 +4,7 @@ import 'package:geometry_calc/model/calc/ICalculator.dart';
 import 'package:geometry_calc/ui/widget/InputWidget.dart';
 
 class CubeCalculator extends ICalculator {
+  /// Грань куба
   double _s = 0;
 
   @override
@@ -15,6 +16,19 @@ class CubeCalculator extends ICalculator {
       'Полная поверхность': _calculateArea,
     };
 
+    initInputs();
+
+    return this;
+  }
+
+  @override
+  void clear() {
+    _s = 0;
+
+    initInputs();
+  }
+
+  void initInputs() {
     super.i = [
       InputWidget(
         label: "Грань",
@@ -25,8 +39,6 @@ class CubeCalculator extends ICalculator {
         },
       ),
     ];
-
-    return this;
   }
 
   double _calculateArea() {

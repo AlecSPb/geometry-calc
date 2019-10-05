@@ -18,6 +18,20 @@ class ConeCalculator extends ICalculator {
       'Площадь поверхности': _calculateArea,
     };
 
+    initInputs();
+
+    return this;
+  }
+
+  @override
+  void clear() {
+    _radius = 0;
+    _height = 0;
+
+    initInputs();
+  }
+
+  void initInputs() {
     super.i = [
       InputWidget(
         label: "Радиус",
@@ -36,8 +50,6 @@ class ConeCalculator extends ICalculator {
         },
       ),
     ];
-
-    return this;
   }
 
   double _calculateVolume() {

@@ -17,6 +17,20 @@ class CylinderCalculator extends ICalculator {
       'Полная поверхность': _calculateArea,
     };
 
+    initInputs();
+
+    return this;
+  }
+
+  @override
+  void clear() {
+    _radius = 0;
+    _height = 0;
+
+    initInputs();
+  }
+
+  void initInputs() {
     super.i = [
       InputWidget(
         label: "Радиус",
@@ -35,8 +49,6 @@ class CylinderCalculator extends ICalculator {
         },
       ),
     ];
-
-    return this;
   }
 
   double _calculateArea() {

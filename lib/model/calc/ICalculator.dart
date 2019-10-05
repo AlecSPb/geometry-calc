@@ -27,4 +27,7 @@ abstract class ICalculator {
     inputsChanged = ic;
     return this;
   }
+
+  /// Отчищает данные калькулятора
+  void clear();
 }
