@@ -1,6 +1,7 @@
 import 'package:geometry_calc/model/Calculator.dart';
 import 'package:geometry_calc/model/calc/CylinderCalculator.dart';
 import 'package:geometry_calc/model/calc/SphereCalculator.dart';
+import 'package:geometry_calc/model/calc/TorusCalculator.dart';
 
 class Data {
   static List<Calculator> calculators = [
@@ -25,9 +26,9 @@ class Data {
       calculator: SphereCalculator(),
     ),
     Calculator(
-      icon: "assets/ic_thor.svg",
+      icon: "assets/ic_thorus.svg",
       title: "Тор",
-      calculator: null,
+      calculator: TorusCalculator(),
     ),
   ];
 }
