@@ -1,14 +1,10 @@
 # Геометрический калькулятор
 
-Быстрый, минималистичный калькулятор, для рассчёта параметров геометрических тел.
+Быстрый, минималистичный калькулятор, для расчёта параметров геометрических тел.
 
 ## Скриншоты
 
-![image](./screenshot/1.png)
-
-![image](./screenshot/2.png)
-
-![image](./screenshot/3.png)
+<img src="./screenshot/1.png" alt="drawing" width="180" height="320"/> <img src="./screenshot/2.png" alt="drawing"  width="180" height="320"/> <img src="./screenshot/3.png" alt="drawing" width="180" height="320"/>
 
 ## Установка
 
