@@ -21,11 +21,20 @@ class InputWidget extends StatefulWidget {
 
 class InputWidgetState extends State<InputWidget> {
   TextEditingController _controller;
+  FocusNode _focusNode;
 
   @override
   void initState() {
     super.initState();
     _controller = new TextEditingController(text: widget.text);
+
+    _focusNode = FocusNode();
+    _focusNode.addListener(() {
+      if (_focusNode.hasFocus) {
+        _controller.selection =
+            TextSelection(baseOffset: 0, extentOffset: _controller.text.length);
+      }
+    });
   }
 
   @override
@@ -44,6 +53,7 @@ class InputWidgetState extends State<InputWidget> {
             Spacer(),
             TextField(
               controller: _controller,
+              focusNode: _focusNode,
               keyboardType: TextInputType.number,
               onChanged: (text) => widget.inputCallback(text),
               style: TextStyle(fontSize: 32),
