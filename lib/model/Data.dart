@@ -1,4 +1,5 @@
 import 'package:geometry_calc/model/Calculator.dart';
+import 'package:geometry_calc/model/calc/CubeCalculator.dart';
 import 'package:geometry_calc/model/calc/CylinderCalculator.dart';
 import 'package:geometry_calc/model/calc/SphereCalculator.dart';
 import 'package:geometry_calc/model/calc/TorusCalculator.dart';
@@ -13,7 +14,7 @@ class Data {
     Calculator(
       icon: "assets/ic_cube.svg",
       title: "Куб",
-      calculator: null,
+      calculator: CubeCalculator(),
     ),
     Calculator(
       icon: "assets/ic_cylinder.svg",
