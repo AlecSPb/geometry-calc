@@ -1,16 +1,21 @@
-# geometry_calc
+# Геометрический калькулятор
 
-Geometry Calculator
+Быстрый, минималистичный калькулятор, для рассчёта параметров геометрических тел.
 
-## Getting Started
+## Скриншоты
 
-This project is a starting point for a Flutter application.
+![image](./screenshot/1.png)
 
-A few resources to get you started if this is your first Flutter project:
+![image](./screenshot/2.png)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+![image](./screenshot/3.png)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Установка
+
+Для установки скачайте apk последнего [релиза приложения](https://github.com/sqxx/geometry_calc/releases) и установите его стандартными средствами Android.
+
+## Сборка
+
+Для сборки потребуется последняя версия [Flutter](https://flutter.dev/), [Android Studio](https://developer.android.com/studio) и установленный [плагин](https://plugins.jetbrains.com/plugin/9212-flutter) для Android Studio.
+
+Для сборки финального apk требуется создать собственный ключ, файл key.properties. Подробно действия для сборки финального apk описаны [здесь](https://www.diera.ru/blog/publishing-flutter-app-to-play-store/).
