@@ -5,10 +5,10 @@ import 'package:geometry_calc/ui/widget/InputWidget.dart';
 
 class TorusCalculator extends ICalculator {
   /// Внешний радиус
-  int _R = 0;
+  double _R = 0;
 
   /// Внутренний радиус
-  int _r = 0;
+  double _r = 0;
 
   @override
   TorusCalculator build(Function ic) {
@@ -24,7 +24,7 @@ class TorusCalculator extends ICalculator {
         label: "Радиус окружности (r)",
         text: _r.toString(),
         inputCallback: (text) {
-          _r = int.parse(text);
+          _r = double.parse(text);
           inputsChanged();
         },
       ),
@@ -32,7 +32,7 @@ class TorusCalculator extends ICalculator {
         label: "Расстояние от центра до оси (R)",
         text: _R.toString(),
         inputCallback: (text) {
-          _R = int.parse(text);
+          _R = double.parse(text);
           inputsChanged();
         },
       ),

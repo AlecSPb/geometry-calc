@@ -4,7 +4,7 @@ import 'package:geometry_calc/model/calc/ICalculator.dart';
 import 'package:geometry_calc/ui/widget/InputWidget.dart';
 
 class SphereCalculator extends ICalculator {
-  int _radius = 0;
+  double _radius = 0;
 
   @override
   SphereCalculator build(Function ic) {
@@ -20,7 +20,7 @@ class SphereCalculator extends ICalculator {
         label: "Радиус",
         text: _radius.toString(),
         inputCallback: (text) {
-          _radius = int.parse(text);
+          _radius = double.parse(text);
           inputsChanged();
         },
       ),

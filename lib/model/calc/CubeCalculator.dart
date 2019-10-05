@@ -4,7 +4,7 @@ import 'package:geometry_calc/model/calc/ICalculator.dart';
 import 'package:geometry_calc/ui/widget/InputWidget.dart';
 
 class CubeCalculator extends ICalculator {
-  int _s = 0;
+  double _s = 0;
 
   @override
   CubeCalculator build(Function ic) {
@@ -20,7 +20,7 @@ class CubeCalculator extends ICalculator {
         label: "Грань",
         text: _s.toString(),
         inputCallback: (text) {
-          _s = int.parse(text);
+          _s = double.parse(text);
           inputsChanged();
         },
       ),
@@ -30,10 +30,10 @@ class CubeCalculator extends ICalculator {
   }
 
   double _calculateArea() {
-    return 6.0 * math.pow(_s, 2);
+    return 6 * math.pow(_s, 2);
   }
 
   double _calculateVolume() {
-    return 1.0 * math.pow(_s, 3);
+    return math.pow(_s, 3);
   }
 }

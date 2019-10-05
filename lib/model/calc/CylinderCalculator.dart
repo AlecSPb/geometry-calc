@@ -4,8 +4,8 @@ import 'package:geometry_calc/model/calc/ICalculator.dart';
 import 'package:geometry_calc/ui/widget/InputWidget.dart';
 
 class CylinderCalculator extends ICalculator {
-  int _radius = 0;
-  int _height = 0;
+  double _radius = 0;
+  double _height = 0;
 
   @override
   CylinderCalculator build(Function ic) {
@@ -22,7 +22,7 @@ class CylinderCalculator extends ICalculator {
         label: "Радиус",
         text: _radius.toString(),
         inputCallback: (text) {
-          _radius = int.parse(text);
+          _radius = double.parse(text);
           inputsChanged();
         },
       ),
@@ -30,7 +30,7 @@ class CylinderCalculator extends ICalculator {
         label: "Высота",
         text: _height.toString(),
         inputCallback: (text) {
-          _height = int.parse(text);
+          _height = double.parse(text);
           inputsChanged();
         },
       ),
